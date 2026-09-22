@@ -2,6 +2,7 @@
   "name": "culture-policy-audit",
   "private": true,
   "scripts": {
-    "test": "node test_service.js"
+    "test": "node test_service.js",
+    "trial": "python3 trial_run.py"
   }
 }
