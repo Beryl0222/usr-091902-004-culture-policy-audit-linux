@@ -1,17 +1,47 @@
 {
   "项目名称": "文化推荐策略治理",
+  "服务标识": "culture-policy-audit",
+  "口径版本": "caliber-v1",
   "参与角色": [
-    "产品经理",
-    "内容编辑",
-    "风险负责人",
-    "创作者"
+    "product_manager（产品经理：提交目标、权重、人群、有效期）",
+    "content_owner（内容负责人：批准/驳回/回滚）",
+    "risk_owner（风险负责人：批准/驳回/紧急回滚）",
+    "content_editor（内容编辑：通道管理、联调分流）",
+    "creator（创作者：查询自己内容进出通道的原因）",
+    "user（用户：画像开关、兴趣重置、撤回自己的事件）"
   ],
-  "参考状态": [
-    "草拟",
-    "待批准",
-    "实验中",
-    "已回滚",
-    "已结束"
+  "策略版本状态": ["draft", "pending", "approved", "active", "rolled_back", "ended"],
+  "信号": ["finish_rate", "favorite", "revisit", "discussion_quality", "diversity"],
+  "实验分段": {
+    "规则": "权重快照/流量/口径随分段冻结；中途调权必须关闭旧分段、策略升版本重新双批准、另开新分段；分段指标独立，禁止并段",
+    "变体": ["treatment", "baseline", "off"],
+    "关闭原因": ["weight_change", "policy_rollback", "experiment_end", "validity_expired"]
+  },
+  "事件类型": [
+    "policy_drafted/submitted/approved/rejected/activated/rolled_back/ended",
+    "experiment_created",
+    "segment_opened/closed",
+    "rank_decided（固化策略版本、权重、分桶、目录哈希与排序）",
+    "exposure_logged",
+    "feedback_received/withdrawn/quarantined",
+    "content_registered",
+    "channel_admitted/exited",
+    "profile_opt_changed/interest_reset/affinity_updated"
   ],
-  "说明": "字段仅用于统一领域称谓，业务记录应由正式接口产生。"
+  "指标口径": {
+    "短期互动窗口": "曝光后 24 小时",
+    "长期回访窗口": "曝光后 24 小时至 7 天",
+    "完播阈值": {"short": "观看>=80%", "long": "观看>=50%（>=15分钟为长内容）"},
+    "日分区封板": "曝光日结束后 7天+1小时；封板后到达的反馈留日志、不改指标",
+    "k_匿名": 5
+  },
+  "隔离原因": [
+    "duplicate（重复事件）",
+    "future_event（声称发生在未来）",
+    "implausibly_late（超出可信迟到界）",
+    "subject_mismatch（跨主体挂接）",
+    "bad_progress/bad_quality/bad_items（字段非法）",
+    "decision_not_found/item_not_in_decision（无法归因到分流决策）"
+  ],
+  "说明": "本文件仅统一领域称谓；业务状态与指标全部由追加式哈希链日志经正式接口产生，任何状态变更不可就地修改。"
 }
